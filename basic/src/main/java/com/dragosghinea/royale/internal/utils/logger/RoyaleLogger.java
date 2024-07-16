@@ -19,10 +19,14 @@ public class RoyaleLogger {
         this.plugin = plugin;
         this.level = level;
         try {
-            this.logger = new FileLoggerWithRotation(new File(plugin.getDataFolder(), String.join(File.pathSeparator, "logs", fileName)), fileName);
+            this.logger = new FileLoggerWithRotation(new File(plugin.getDataFolder(), String.join(File.separator, "logs", fileName)), fileName);
         } catch (IOException e) {
             throw new RuntimeException("Failed to create logger", e);
         }
+    }
+
+    public void shutdown() {
+        logger.manuallyShutdown();
     }
 
     public void debug(String message) {
