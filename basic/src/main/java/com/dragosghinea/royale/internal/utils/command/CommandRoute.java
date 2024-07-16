@@ -2,6 +2,7 @@ package com.dragosghinea.royale.internal.utils.command;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,12 @@ public interface CommandRoute {
 
     default boolean onCommand(CommandSender sender, String[] args, int depth) {
         Map<String, CommandRoute> routes = getChildrenRoutes();
-        if (routes == null)
-            throw new RuntimeException("No child routes specified and onCommand not implemented!");
+        if (routes == null) {
+            if (depth == 0)
+                return onCommand(sender, args);
+
+            return onCommand(sender, Arrays.stream(args).skip(depth).toArray(String[]::new));
+        }
 
         if (args.length - depth == 0) {
             CommandRoute fallback = routes.getOrDefault("", null);
@@ -60,8 +65,12 @@ public interface CommandRoute {
 
     default List<String> onTabComplete(CommandSender sender, String[] args, int depth) {
         Map<String, CommandRoute> childrenRoutes = getChildrenRoutes();
-        if (childrenRoutes == null)
-            return Collections.emptyList();
+        if (childrenRoutes == null) {
+            if (depth == 0)
+                return onTabComplete(sender, args);
+
+            return onTabComplete(sender, Arrays.stream(args).skip(depth).toArray(String[]::new));
+        }
 
         List<String> toReturn = Collections.emptyList();
         String arg = args[depth];
