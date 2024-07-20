@@ -15,17 +15,16 @@ public class ColorMessageProcessorImpl implements MessageProcessor {
         if (message == null)
             return ChatColor.translateAlternateColorCodes('&', "&cMissing Text");
 
-        Matcher hexColorMatcher = Pattern.compile("\\{#[0-9A-Fa-f]{6}}").matcher(message);
+        Matcher hexColorMatcher = Pattern.compile("\\{#([0-9A-Fa-f]{6})}").matcher(message);
         if (!hexColorMatcher.find())
             return ChatColor.translateAlternateColorCodes('&', message);
 
         do {
-            String hexColorUnformatted = hexColorMatcher.group();
-            String hexColorCompiled = "§x" + Arrays.stream(hexColorUnformatted.substring(0, hexColorUnformatted.length() - 1).split(""))
-                    .skip(2)
+            String hexColorUnformatted = hexColorMatcher.group(0); // entire match {#RRGGBB}
+            String hexColorCode = hexColorMatcher.group(1); // only RRGGBB part
+            String hexColorCompiled = "§x" + Arrays.stream(hexColorCode.split(""))
                     .map((hexChar) -> "§" + hexChar)
-                    .collect(Collectors.joining())
-                    .replace("§#", "");
+                    .collect(Collectors.joining());
 
             message = message.replace(hexColorUnformatted, hexColorCompiled);
         } while (hexColorMatcher.find());
