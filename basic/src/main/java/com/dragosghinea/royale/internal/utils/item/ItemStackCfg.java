@@ -3,6 +3,7 @@ package com.dragosghinea.royale.internal.utils.item;
 import com.dragosghinea.yaml.ConfigValues;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class ItemStackCfg extends ConfigValues {
 
     @JsonProperty("material")
