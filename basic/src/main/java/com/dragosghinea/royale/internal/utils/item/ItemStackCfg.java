@@ -18,6 +18,7 @@ public class ItemStackCfg extends ConfigValues {
     private String material;
 
     @JsonProperty("amount")
+    @Builder.Default
     private int amount = 1;
 
     @JsonProperty("name")
