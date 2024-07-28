@@ -19,7 +19,7 @@ public class StandardMaterialStringProcessor implements MaterialStringProcessor 
     private static int[] parseNumericId(String materialString) {
 
         Matcher matching = NUMERIC_ID_PATTERN.matcher(materialString);
-        if (matching.matches()) {
+        if (!matching.matches()) {
             return null;
         }
 
