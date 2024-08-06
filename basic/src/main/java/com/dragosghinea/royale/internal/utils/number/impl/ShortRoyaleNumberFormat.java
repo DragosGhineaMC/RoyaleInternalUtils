@@ -32,7 +32,7 @@ public class ShortRoyaleNumberFormat implements RoyaleNumberFormat {
         if (number.compareTo(minimum) < 0) return decimalFormat.format(number);
 
         Map.Entry<BigDecimal, String> suffix = suffixes.floorEntry(number);
-        BigDecimal truncated = number.divide(suffix.getKey(), RoundingMode.HALF_EVEN);
+        BigDecimal truncated = number.setScale(2, RoundingMode.HALF_EVEN).divide(suffix.getKey(), RoundingMode.HALF_EVEN);
 
         return decimalFormat.format(truncated) + suffix.getValue();
     }
