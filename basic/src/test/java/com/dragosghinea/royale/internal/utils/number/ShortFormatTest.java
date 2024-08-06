@@ -106,6 +106,7 @@ public class ShortFormatTest {
         assertEquals(BigDecimal.valueOf(1230.0).setScale(2, RoundingMode.HALF_EVEN), shortRoyaleNumberFormat.fromFormat("1.23K"));
         assertEquals(BigDecimal.valueOf(1500.0), shortRoyaleNumberFormat.fromFormat("1.5K"));
         assertEquals(BigDecimal.valueOf(1760).setScale(2, RoundingMode.HALF_EVEN), shortRoyaleNumberFormat.fromFormat("1.76K"));
+        assertEquals(BigDecimal.valueOf(1_300_000), shortRoyaleNumberFormat.fromFormat("1,300K"));
         assertEquals(BigDecimal.valueOf(1_300_000.0), shortRoyaleNumberFormat.fromFormat("1.3M"));
         assertEquals(BigDecimal.valueOf(1_290_000_000).setScale(2, RoundingMode.HALF_EVEN), shortRoyaleNumberFormat.fromFormat("1.29G"));
         assertEquals(0, BigDecimal.valueOf(1_500_000_000_000.0).compareTo(shortRoyaleNumberFormat.fromFormat("1.5T")));
