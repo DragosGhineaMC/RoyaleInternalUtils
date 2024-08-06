@@ -6,10 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -25,6 +23,7 @@ public class InputCfg extends ConfigValues {
         " ",
         "If your option is not available, the input will try to fall back to the next available option."
     })
+    @Builder.Default
     @JsonProperty("input-type")
     private String inputType = "sign";
 
@@ -34,6 +33,7 @@ public class InputCfg extends ConfigValues {
         "If the player does not respond in time, the input will be considered invalid.",
         "The following message will be sent."
     })
+    @Builder.Default
     @JsonProperty("chat-took-too-long")
     private String chatTookTooLong = "&cYou took too long to enter an input.";
 
@@ -43,6 +43,7 @@ public class InputCfg extends ConfigValues {
         "For anvil input, these would be the lore of the item.",
         "For chat input, these would be the messages sent to the player."
     })
+    @Builder.Default
     @JsonProperty("lines")
     private List<String> lines = new ArrayList<>();
     {
