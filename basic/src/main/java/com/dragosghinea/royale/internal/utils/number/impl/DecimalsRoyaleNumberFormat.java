@@ -17,6 +17,8 @@ public class DecimalsRoyaleNumberFormat implements RoyaleNumberFormat {
 
     public DecimalsRoyaleNumberFormat(int numberOfDecimals, boolean forceAllDecimals) {
         decimalFormat = new DecimalFormat("#.##");
+        decimalFormat.setGroupingSize(3);
+        decimalFormat.setGroupingUsed(true);
 
         if (forceAllDecimals)
             decimalFormat.setMinimumFractionDigits(numberOfDecimals);
@@ -30,6 +32,7 @@ public class DecimalsRoyaleNumberFormat implements RoyaleNumberFormat {
 
     @Override
     public BigDecimal fromFormat(String number) {
+        number = number.replace(decimalFormat.getDecimalFormatSymbols().getGroupingSeparator() + "", "");
         return new BigDecimal(number);
     }
 }
