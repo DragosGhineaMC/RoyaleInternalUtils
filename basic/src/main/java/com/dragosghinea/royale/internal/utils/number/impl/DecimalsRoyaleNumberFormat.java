@@ -3,6 +3,7 @@ package com.dragosghinea.royale.internal.utils.number.impl;
 import com.dragosghinea.royale.internal.utils.number.RoyaleNumberFormat;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class DecimalsRoyaleNumberFormat implements RoyaleNumberFormat {
@@ -33,6 +34,6 @@ public class DecimalsRoyaleNumberFormat implements RoyaleNumberFormat {
     @Override
     public BigDecimal fromFormat(String number) {
         number = number.replace(decimalFormat.getDecimalFormatSymbols().getGroupingSeparator() + "", "");
-        return new BigDecimal(number);
+        return new BigDecimal(number).setScale(decimalFormat.getMaximumFractionDigits(), RoundingMode.HALF_EVEN);
     }
 }
