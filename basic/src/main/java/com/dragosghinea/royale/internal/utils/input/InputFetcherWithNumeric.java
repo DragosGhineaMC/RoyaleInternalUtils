@@ -1,7 +1,6 @@
 package com.dragosghinea.royale.internal.utils.input;
 
 import com.dragosghinea.royale.internal.utils.number.RoyaleNumberFormat;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 

@@ -1,5 +1,8 @@
 package com.dragosghinea.royale.internal.utils.logger;
 
+import lombok.Getter;
+
+@Getter
 public enum Level {
 
     DEBUG(1),
@@ -12,10 +15,6 @@ public enum Level {
 
     Level(int level) {
         this.level = level;
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public boolean isEnabled(Level level) {

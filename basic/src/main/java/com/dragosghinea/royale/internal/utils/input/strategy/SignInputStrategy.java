@@ -4,7 +4,6 @@ import com.dragosghinea.royale.internal.utils.input.InputCfg;
 import de.rapha149.signgui.SignGUI;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
