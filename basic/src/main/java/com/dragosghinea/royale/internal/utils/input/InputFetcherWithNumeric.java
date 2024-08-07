@@ -30,6 +30,9 @@ public class InputFetcherWithNumeric extends InputFetcher {
     }
 
     private BigDecimal parseNumericInput(String input) {
+        if (input == null)
+            return null;
+
         input = preprocessInput(input);
 
         for (RoyaleNumberFormat numberFormat : numberFormats) {
@@ -44,6 +47,9 @@ public class InputFetcherWithNumeric extends InputFetcher {
 
     public InputFetcherWithNumeric(Plugin plugin, InputCfg inputCfg, List<RoyaleNumberFormat> numberFormats) {
         super(plugin, inputCfg);
+        if (numberFormats == null)
+            throw new IllegalArgumentException("Number formats cannot be null");
+
         this.numberFormats = numberFormats;
     }
 
@@ -54,7 +60,11 @@ public class InputFetcherWithNumeric extends InputFetcher {
             try {
                 future.complete(parseNumericInput(input));
             } catch (NumberFormatException e) {
+                e.printStackTrace();
                 future.completeExceptionally(e);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
             }
         });
 
