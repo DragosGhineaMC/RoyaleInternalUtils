@@ -90,6 +90,12 @@
             <artifactId>signgui</artifactId>
             <version>2.3.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.3.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -120,6 +126,14 @@
                         <relocation>
                             <pattern>com.cryptomorin.xseries</pattern>
                             <shadedPattern>com.dragosghinea.royale.internal.utils.xseries</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.quartz</pattern>
+                            <shadedPattern>com.dragosghinea.royale.internal.utils.time.quartz</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.terracotta.quartz</pattern>
+                            <shadedPattern>com.dragosghinea.royale.internal.utils.time.terracotta.quartz</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
