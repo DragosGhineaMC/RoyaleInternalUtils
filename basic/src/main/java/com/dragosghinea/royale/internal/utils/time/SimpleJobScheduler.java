@@ -2,6 +2,10 @@ package com.dragosghinea.royale.internal.utils.time;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class SimpleJobScheduler {
 
@@ -12,16 +16,30 @@ public class SimpleJobScheduler {
         this.scheduler.start();
     }
 
-    public synchronized void scheduleTask(RoyaleCronJob job) throws SchedulerException {
+    public synchronized void scheduleTask(RoyaleCronJob job, String groupName) throws SchedulerException {
         JobDetail jobDetail = JobBuilder.newJob(job.getClass())
-                                        .withIdentity(job.getJobName(), "default")
+                                        .withIdentity(job.getJobName(), groupName)
                                         .build();
 
         scheduler.scheduleJob(jobDetail, job.getTrigger());
     }
 
-    public synchronized boolean cancelTask(String jobName) throws SchedulerException {
-        return scheduler.deleteJob(new JobKey(jobName, "default"));
+    public void scheduleTask(RoyaleCronJob job) throws SchedulerException {
+        scheduleTask(job, "default");
+    }
+
+    public synchronized boolean cancelTask(String jobName, String groupName) throws SchedulerException {
+        return scheduler.deleteJob(new JobKey(jobName, groupName));
+    }
+
+    public boolean cancelTask(String jobName) throws SchedulerException {
+        return cancelTask(jobName, "default");
+    }
+
+    public synchronized boolean cancelGroup(String groupName) throws SchedulerException {
+        Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName));
+
+        return scheduler.deleteJobs(new ArrayList<>(jobKeys));
     }
 
     public void shutdown() throws SchedulerException {
