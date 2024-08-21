@@ -5,6 +5,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Set;
 
 public class SimpleJobScheduler {
@@ -12,7 +13,15 @@ public class SimpleJobScheduler {
     private final Scheduler scheduler;
 
     public SimpleJobScheduler() throws SchedulerException {
-        this.scheduler = StdSchedulerFactory.getDefaultScheduler();
+        StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
+
+        Properties properties = new Properties();
+        properties.setProperty("org.quartz.scheduler.instanceName", "RoyaleQuartzScheduler");
+        properties.setProperty("org.quartz.threadPool.threadCount", "10");
+
+        schedulerFactory.initialize(properties);
+
+        this.scheduler = schedulerFactory.getScheduler();
         this.scheduler.start();
     }
 
