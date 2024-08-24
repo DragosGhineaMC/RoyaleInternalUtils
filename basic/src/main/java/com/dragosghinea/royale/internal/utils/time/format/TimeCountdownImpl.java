@@ -37,4 +37,24 @@ public class TimeCountdownImpl implements TimeCountdown {
 
         return result.toString();
     }
+
+    @Override
+    public String formatFirstAvailable(long timeInSeconds, boolean useSpaces, TimeDisplay... whatToDisplay) {
+        for (TimeDisplay timeDisplay : whatToDisplay) {
+            long amount = timeDisplay.getAmount(timeInSeconds);
+            if (amount > 0) {
+                String name = amount == 1 ?
+                        names.getOrDefault(timeDisplay.getSingularName(), timeDisplay.getSingularName())
+                        :
+                        names.getOrDefault(timeDisplay.getPluralName(), timeDisplay.getPluralName());
+
+                if (useSpaces)
+                    return numberFormat.format(amount) + " " + name;
+
+                return numberFormat.format(amount) + name;
+            }
+        }
+
+        return "";
+    }
 }
