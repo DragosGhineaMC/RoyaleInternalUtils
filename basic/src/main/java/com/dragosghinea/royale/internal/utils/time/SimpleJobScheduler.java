@@ -30,7 +30,16 @@ public class SimpleJobScheduler {
                                         .withIdentity(job.getJobName(), groupName)
                                         .build();
 
-        scheduler.scheduleJob(jobDetail, job.getTrigger());
+        Trigger trigger = TriggerBuilder.newTrigger()
+                        .withIdentity(job.getTriggerName(), groupName)
+                        .withSchedule(CronScheduleBuilder.cronSchedule(job.getCronExpression()))
+                        .build();
+
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+    public Trigger getTrigger(String triggerName, String groupName) throws SchedulerException {
+        return scheduler.getTrigger(new TriggerKey(triggerName, groupName));
     }
 
     public void scheduleTask(RoyaleCronJob job) throws SchedulerException {
