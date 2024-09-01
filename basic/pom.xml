@@ -22,6 +22,11 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -106,6 +111,19 @@
 <!--                </exclusion>-->
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.Revxrsal.Lamp</groupId>
+            <artifactId>common</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+
+        <!-- Add your specific platform module here -->
+        <dependency>
+            <groupId>com.github.Revxrsal.Lamp</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>3.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -125,6 +143,10 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <configuration>
                     <relocations>
+                        <relocation>
+                            <pattern>revxrsal.commands</pattern>
+                            <shadedPattern>com.dragosghinea.royale.internal.utils.command</shadedPattern>
+                        </relocation>
                         <relocation>
                             <pattern>de.tr7zw.changeme.nbtapi</pattern>
                             <shadedPattern>com.dragosghinea.royale.internal.utils.nbtapi</shadedPattern>
