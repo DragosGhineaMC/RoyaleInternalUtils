@@ -48,9 +48,6 @@
                                         <artifact>*:*</artifact>
                                         <excludes>
                                             <exclude>META-INF/**</exclude>
-                                            <exclude>lamp-*.properties</exclude>
-                                            <exclude>lamp_*.properties</exclude>
-                                            <exclude>checkstyle.xml</exclude>
                                         </excludes>
                                     </filter>
                                 </filters>
