@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CommandUtils {
 
     private final Plugin plugin;
-    private final Map<String, RoyaleCommand> loadedCommands = new ConcurrentHashMap<>();
+    private final Map<String, RoyaleBaseCommand> loadedCommands = new ConcurrentHashMap<>();
 
     private CommandMap commandMap = null;
     private CommandMap getCommandMap() {
@@ -64,12 +64,12 @@ public class CommandUtils {
         loadedCommands.clear();
     }
 
-    public void registerCommand(RoyaleCommand pluginCommand) {
+    public void registerCommand(RoyaleBaseCommand pluginCommand) {
         loadedCommands.put(pluginCommand.getName(), pluginCommand);
         getCommandMap().register(plugin.getDescription().getName(), pluginCommand);
     }
 
-    public void unregisterCommand(RoyaleCommand pluginCommand) {
+    public void unregisterCommand(RoyaleBaseCommand pluginCommand) {
         loadedCommands.remove(pluginCommand.getName());
         pluginCommand.unregister(getCommandMap());
     }
