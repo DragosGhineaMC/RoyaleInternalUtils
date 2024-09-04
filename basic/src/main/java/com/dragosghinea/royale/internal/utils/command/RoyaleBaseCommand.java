@@ -36,9 +36,12 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
         CmdRoute route = null;
         Map<String, CmdRoute> routesToCheck = routes;
         while (true) {
-            String routeToCheck = args.isEmpty() ? "default" : args.pop();
+            String routeToCheck = args.isEmpty() ? "" : args.peek();
 
             if (routesToCheck.containsKey(routeToCheck)) {
+                if (!args.isEmpty())
+                    args.pop();
+
                 route = routes.get(routeToCheck);
                 if (!route.canExecute(sender, false))
                     break;
