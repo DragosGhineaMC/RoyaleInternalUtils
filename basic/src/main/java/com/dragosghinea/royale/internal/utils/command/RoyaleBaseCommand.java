@@ -29,35 +29,10 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
         this.routes = routes;
     }
 
-    private CmdRoute getDeepestRoute(CommandSender sender, Stack<String> args) {
+    private CmdContext generateContext(CommandSender sender, String[] args) {
         if (routes.isEmpty())
             throw new IllegalStateException("No routes defined for command " + getName());
 
-        CmdRoute route = null;
-        Map<String, CmdRoute> routesToCheck = routes;
-        while (true) {
-            String routeToCheck = args.isEmpty() ? "" : args.peek();
-
-            if (routesToCheck.containsKey(routeToCheck)) {
-                if (!args.isEmpty())
-                    args.pop();
-
-                route = routes.get(routeToCheck);
-                if (!route.canExecute(sender, false))
-                    break;
-
-                routesToCheck = route.subRoutes();
-                continue;
-            }
-
-            break;
-        }
-
-        return route;
-    }
-
-    @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         Stack<String> argStack = new Stack<>();
         int i = args.length - 1;
         while (i >= 0) {
@@ -65,10 +40,38 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
             i--;
         }
 
-        CmdRoute route = getDeepestRoute(commandSender, argStack);
-        if (route == null) {
+        CmdContext context = new CmdContext(sender, this, argStack);
+        CmdRoute route;
+        Map<String, CmdRoute> routesToCheck = routes;
+        while (true) {
+            String routeToCheck = argStack.isEmpty() ? "" : argStack.peek();
+
+            if (routesToCheck.containsKey(routeToCheck)) {
+                if (!argStack.isEmpty())
+                    argStack.pop();
+
+                route = routes.get(routeToCheck);
+                if (!route.canExecute(context, false))
+                    break;
+
+                routesToCheck = route.subRoutes();
+                context.getPassedThrough().add(route);
+                continue;
+            }
+
+            break;
+        }
+
+        return context;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+        CmdContext context = generateContext(commandSender, args);
+
+        if (context.getPassedThrough().isEmpty()) {
             routes.values().stream()
-                    .filter(cmdRoute -> cmdRoute.canExecute(commandSender, true))
+                    .filter(cmdRoute -> cmdRoute.canExecute(context, true))
                     .map(routeCmd -> routeCmd.getDescription().isEmpty() ?
                             String.format("§c/%s %s", s, routeCmd.getName())
                             :
@@ -79,27 +82,22 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
             return false;
         }
 
-        return route.execute(commandSender, argStack);
+        CmdRoute route = context.getPassedThrough().remove(context.getPassedThrough().size() - 1);
+        return route.execute(context);
     }
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
-        Stack<String> argStack = new Stack<>();
-        int i = args.length - 1;
-        while (i >= 0) {
-            argStack.push(args[i]);
-            i--;
-        }
-
-        CmdRoute route = getDeepestRoute(commandSender, argStack);
-        if (route == null) {
+        CmdContext context = generateContext(commandSender, args);
+        if (context.getPassedThrough().isEmpty()) {
             return routes.values().stream()
-                    .filter(cmdRoute -> cmdRoute.canExecute(commandSender, true))
+                    .filter(cmdRoute -> cmdRoute.canExecute(context, true))
                     .map(CmdRoute::getName)
                     .collect(Collectors.toList());
         }
 
-        return route.tabComplete(commandSender, argStack);
+        CmdRoute route = context.getPassedThrough().remove(context.getPassedThrough().size() - 1);
+        return route.tabComplete(context);
     }
 
     @Override

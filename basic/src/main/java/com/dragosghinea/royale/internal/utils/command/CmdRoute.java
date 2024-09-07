@@ -1,11 +1,8 @@
 package com.dragosghinea.royale.internal.utils.command;
 
-import org.bukkit.command.CommandSender;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 public interface CmdRoute {
@@ -16,13 +13,13 @@ public interface CmdRoute {
         return "";
     }
 
-    boolean canExecute(CommandSender sender, boolean silentCheck);
+    boolean canExecute(CmdContext context, boolean silentCheck);
 
-    boolean execute(CommandSender sender, Stack<String> args);
+    boolean execute(CmdContext context);
 
-    default List<String> tabComplete(CommandSender sender, Stack<String> args) {
+    default List<String> tabComplete(CmdContext context) {
         return subRoutes().values().stream()
-                .filter(cmdRoute -> cmdRoute.canExecute(sender, true))
+                .filter(cmdRoute -> cmdRoute.canExecute(context, true))
                 .map(CmdRoute::getName)
                 .collect(Collectors.toList());
     }
