@@ -53,15 +53,7 @@ public class ChatInputStrategy implements InputStrategy {
         return onChatInput;
     }
 
-    private static class ChatHandler implements Listener {
-
-        private final Player player;
-        private final CompletableFuture<String> onChatInput;
-
-        public ChatHandler(Player player, CompletableFuture<String> onChatInput) {
-            this.player = player;
-            this.onChatInput = onChatInput;
-        }
+    private record ChatHandler(Player player, CompletableFuture<String> onChatInput) implements Listener {
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void chatListener(AsyncPlayerChatEvent e) {
