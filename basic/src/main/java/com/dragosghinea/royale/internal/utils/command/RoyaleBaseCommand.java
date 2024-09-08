@@ -50,7 +50,7 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
                 if (!argStack.isEmpty())
                     argStack.pop();
 
-                route = routes.get(routeToCheck);
+                route = routesToCheck.get(routeToCheck);
                 if (!route.canExecute(context, false))
                     break;
 
