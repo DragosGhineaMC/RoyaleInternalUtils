@@ -13,7 +13,7 @@ public class LongMapFromStringStack implements MapFromStack<Long> {
         try {
             return Long.parseLong(toConvert);
         } catch (NumberFormatException e) {
-            throw new InvalidCommandParameter(0, Long.class, e);
+            throw new InvalidCommandParameter(0, Long.class, toConvert, e);
         }
     }
 }

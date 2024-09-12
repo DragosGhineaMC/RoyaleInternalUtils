@@ -28,6 +28,6 @@ public class BigDecimalMapFromStringStack implements MapFromStack<BigDecimal> {
             }
         }
 
-        throw new InvalidCommandParameter(0, BigDecimal.class);
+        throw new InvalidCommandParameter(0, BigDecimal.class, toConvert);
     }
 }

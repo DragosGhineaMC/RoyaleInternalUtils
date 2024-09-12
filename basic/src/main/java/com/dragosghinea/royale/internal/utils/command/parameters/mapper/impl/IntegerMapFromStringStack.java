@@ -13,7 +13,7 @@ public class IntegerMapFromStringStack implements MapFromStack<Integer> {
         try {
             return Integer.parseInt(toConvert);
         } catch (NumberFormatException e) {
-            throw new InvalidCommandParameter(0, Integer.class, e);
+            throw new InvalidCommandParameter(0, Integer.class, toConvert, e);
         }
     }
 }

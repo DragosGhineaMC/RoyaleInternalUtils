@@ -13,7 +13,7 @@ public class DoubleMapFromStringStack implements MapFromStack<Double> {
         try {
             return Double.parseDouble(toConvert);
         } catch (NumberFormatException e) {
-            throw new InvalidCommandParameter(0, Double.class, e);
+            throw new InvalidCommandParameter(0, Double.class, toConvert, e);
         }
     }
 }

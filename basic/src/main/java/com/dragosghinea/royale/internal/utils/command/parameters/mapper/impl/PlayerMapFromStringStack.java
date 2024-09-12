@@ -21,7 +21,7 @@ public class PlayerMapFromStringStack implements MapFromStack<OfflinePlayer> {
                 return Bukkit.getPlayer(toConvert);
             }
         } catch (Exception e) {
-            throw new InvalidCommandParameter(0, OfflinePlayer.class, e);
+            throw new InvalidCommandParameter(0, OfflinePlayer.class, toConvert, e);
         }
     }
 }
