@@ -41,9 +41,9 @@ public class ResolveMethodParametersImpl implements ResolveMethodParameters {
             try {
                 parameters[i] = mapper.map(args);
             } catch (InvalidCommandParameter e) {
-                throw new InvalidCommandParameter(i, e.getParameterType(), e.getCause());
+                throw new InvalidCommandParameter(i, e.getParameterType(), e.getArgumentThatWasNotValid(), e.getCause());
             } catch (EmptyStackException e) {
-                throw new InvalidCommandParameter(i, parameterType, e);
+                throw new InvalidCommandParameter(i, parameterType, "", e);
             }
         }
 
