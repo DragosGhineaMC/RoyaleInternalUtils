@@ -27,4 +27,7 @@ public class ItemStackCfg extends ConfigValues {
     @JsonProperty("lore")
     private List<String> lore;
 
+    @JsonProperty("custom-model-data")
+    private Integer customModelData;
+
 }

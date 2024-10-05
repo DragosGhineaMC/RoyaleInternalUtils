@@ -1,6 +1,7 @@
 package com.dragosghinea.royale.internal.utils.item;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.dragosghinea.royale.internal.utils.VersionUtils;
 import com.dragosghinea.royale.internal.utils.material.MaterialStringProcessor;
 import com.dragosghinea.royale.internal.utils.material.StandardMaterialStringProcessor;
 import org.bukkit.inventory.ItemStack;
@@ -29,12 +30,15 @@ public class StandardCfgToItemStackMapper implements CfgToItemStackMapper {
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            if (itemStackCfg.getName() != null) {
+            if (VersionUtils.IS_CUSTOM_MODEL_DATA && itemStackCfg.getCustomModelData() != null)
+                itemMeta.setCustomModelData(itemStackCfg.getCustomModelData());
+
+            if (itemStackCfg.getName() != null)
                 itemMeta.setDisplayName(itemStackCfg.getName());
-            }
-            if (itemStackCfg.getLore() != null) {
+
+            if (itemStackCfg.getLore() != null)
                 itemMeta.setLore(itemStackCfg.getLore());
-            }
+
             itemStack.setItemMeta(itemMeta);
         }
 
