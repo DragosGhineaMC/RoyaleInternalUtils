@@ -6,9 +6,11 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 public class FileLoggerWithRotation {
@@ -17,6 +19,7 @@ public class FileLoggerWithRotation {
     private static final int MAX_FILES = 10;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final Pattern DATE_PATTERN_IN_FILE = Pattern.compile(".*-(\\d{4}-\\d{2}-\\d{2})(?:-\\((\\d+)\\))?\\.log(?:\\.gz)?");
 
     private File logFile;
     private BufferedWriter logWriter;
@@ -35,6 +38,7 @@ public class FileLoggerWithRotation {
         this.logExecutor = Executors.newSingleThreadExecutor();
         this.logFileName = logFileName;
 
+        archiveExistingLogs();
         setupLogger();
 
         logExecutor.submit(this::processLogQueue);
@@ -101,14 +105,57 @@ public class FileLoggerWithRotation {
     }
 
     private void rotateLogs() throws IOException {
-        logWriter.close();
-        gzipFile(logFile);
+        if (logWriter != null) {
+            logWriter.close();
+        }
 
+        if (logFile != null) {
+            gzipFile(logFile);
+        }
+
+        archiveExistingLogs();
+    }
+
+    private void archiveExistingLogs() throws IOException {
         File[] logFiles = logDirectory.listFiles((dir, name) -> name.endsWith(".log") || name.endsWith(".log.gz"));
 
         if (logFiles == null) return;
 
-        Arrays.sort(logFiles, Comparator.comparingLong(File::lastModified).reversed());
+        Arrays.sort(logFiles, (file1, file2) -> {
+            String name1 = file1.getName();
+            String name2 = file2.getName();
+
+            Matcher matcher1 = DATE_PATTERN_IN_FILE.matcher(name1);
+            Matcher matcher2 = DATE_PATTERN_IN_FILE.matcher(name2);
+
+            if (matcher1.matches() && matcher2.matches()) {
+                // Parse dates
+                LocalDate date1 = parseDate(matcher1.group(1), DATE_FORMATTER);
+                LocalDate date2 = parseDate(matcher2.group(1), DATE_FORMATTER);
+                int dateComparison = date2.compareTo(date1); // descending order for dates
+
+                if (dateComparison != 0) {
+                    return dateComparison;
+                }
+
+                // Parse and compare the optional numbers in descending order
+                String numStr1 = matcher1.group(2);
+                String numStr2 = matcher2.group(2);
+
+                if (numStr1 != null && numStr2 != null) {
+                    int num1 = Integer.parseInt(numStr1);
+                    int num2 = Integer.parseInt(numStr2);
+                    return Integer.compare(num2, num1); // descending order for numbers
+                } else if (numStr1 != null) {
+                    return -1; // file1 has a number, file2 does not, so file1 goes first
+                } else if (numStr2 != null) {
+                    return 1; // file2 has a number, file1 does not, so file2 goes first
+                }
+            }
+
+            // Fallback to last modified if patterns do not match
+            return Long.compare(file2.lastModified(), file1.lastModified());
+        });
 
         for (int i = 0; i < logFiles.length; i++) {
             File logFile = logFiles[i];
@@ -120,6 +167,15 @@ public class FileLoggerWithRotation {
 
             if (logFile.getName().endsWith(".log"))
                 gzipFile(logFile);
+        }
+    }
+
+    private LocalDate parseDate(String dateStr, DateTimeFormatter formatter) {
+        try {
+            return LocalDate.parse(dateStr, formatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Failed to parse date: " + dateStr);
+            return LocalDate.MIN; // Return a minimum date if parsing fails
         }
     }
 
@@ -139,7 +195,7 @@ public class FileLoggerWithRotation {
     }
 
     private String generateLogFileName(LocalDate date, int duplicateIndex) {
-        return logFileName + "-" + DATE_FORMATTER.format(date)+ "-(" + duplicateIndex + ")" + ".log";
+        return logFileName + "-" + DATE_FORMATTER.format(date) + "-(" + duplicateIndex + ")" + ".log";
     }
 
     private String generateLogFileName(LocalDate date) {
