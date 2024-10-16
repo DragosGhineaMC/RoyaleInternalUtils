@@ -15,6 +15,10 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
     private final Plugin plugin;
     protected final Map<String, CmdRoute> routes;
 
+    public String getColor() {
+        return "§c";
+    }
+
     public RoyaleBaseCommand(Plugin plugin, String name, String permission, String permissionMessage, List<String> aliases, Map<String, CmdRoute> routes) {
         this(plugin, name, aliases, routes);
         super.setPermission(permission);
@@ -73,9 +77,9 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
             routes.values().stream()
                     .filter(cmdRoute -> cmdRoute.canExecute(context, true))
                     .map(routeCmd -> routeCmd.getDescription().isEmpty() ?
-                            String.format("§c/%s %s", s, routeCmd.getName())
+                            String.format("%s/%s %s", getColor(), s, routeCmd.getName())
                             :
-                            String.format("§c/%s %s §7- §f%s", s, routeCmd.getName(), routeCmd.getDescription())
+                            String.format("%s/%s %s §7- §f%s", getColor(), s, routeCmd.getName(), routeCmd.getDescription())
                     )
                     .forEach(commandSender::sendMessage);
 
