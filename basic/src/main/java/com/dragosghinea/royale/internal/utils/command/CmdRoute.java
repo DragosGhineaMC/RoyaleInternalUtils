@@ -34,8 +34,18 @@ public interface CmdRoute {
     }
 
     default List<String> tabComplete(CmdContext context) {
+        Map<String, CmdRoute> subRoutesToUse;
+        if (context.getArgsLeftToProcess().isEmpty()) {
+            if (context.getPassedThrough().isEmpty())
+                subRoutesToUse = context.getCommand().getRoutes();
+            else
+                subRoutesToUse = context.getPassedThrough().getLast().subRoutes();
+        } else {
+            subRoutesToUse = subRoutes();
+        }
+
         String currentInput = context.getArgsLeftToProcess().isEmpty() ? "" : context.getArgsLeftToProcess().lastElement();
-        return subRoutes().values().stream()
+        return subRoutesToUse.values().stream()
                 .filter(cmdRoute -> cmdRoute.canExecute(context, true))
                 .map(CmdRoute::getName)
                 .filter(routeName -> routeName.startsWith(currentInput))
