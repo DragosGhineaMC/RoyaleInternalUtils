@@ -4,6 +4,7 @@ import com.dragosghinea.royale.internal.utils.input.strategy.AnvilInputStrategy;
 import com.dragosghinea.royale.internal.utils.input.strategy.ChatInputStrategy;
 import com.dragosghinea.royale.internal.utils.input.strategy.InputStrategy;
 import com.dragosghinea.royale.internal.utils.input.strategy.SignInputStrategy;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -18,12 +19,15 @@ public class InputFetcher {
 
     private final InputCfg inputCfg;
 
+    private final PlatformScheduler scheduler;
+
     @Setter
     private InputStrategy inputStrategy;
 
-    public InputFetcher(Plugin plugin, InputCfg inputCfg) {
+    public InputFetcher(Plugin plugin, InputCfg inputCfg, PlatformScheduler scheduler) {
         this.plugin = plugin;
         this.inputCfg = inputCfg;
+        this.scheduler = scheduler;
 
         switch(inputCfg.getInputType().toUpperCase()) {
             case "ANVIL":
@@ -33,7 +37,7 @@ public class InputFetcher {
                 inputStrategy = new SignInputStrategy(inputCfg);
                 break;
             default: //CHAT
-                inputStrategy = new ChatInputStrategy(plugin, inputCfg);
+                inputStrategy = new ChatInputStrategy(plugin, inputCfg, scheduler);
         }
     }
 
@@ -49,7 +53,7 @@ public class InputFetcher {
             }
             else if(inputStrategy instanceof AnvilInputStrategy){
                 plugin.getLogger().info("Anvil input strategy failed, switching to chat input strategy");
-                inputStrategy = new ChatInputStrategy(plugin, inputCfg);
+                inputStrategy = new ChatInputStrategy(plugin, inputCfg, scheduler);
             }
             else {
                 plugin.getLogger().info("Chat input strategy failed, giving up");

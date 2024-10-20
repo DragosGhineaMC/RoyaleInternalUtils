@@ -7,6 +7,7 @@ import com.dragosghinea.royale.internal.utils.messages.impl.StringMessageProcess
 import com.dragosghinea.royale.internal.utils.messages.impl.processor.ColorMessageProcessorImpl;
 import com.dragosghinea.royale.internal.utils.messages.impl.processor.PlaceholderAPIMessageProcessorImpl;
 import com.dragosghinea.royale.internal.utils.messages.impl.sender.PlainMessageSenderImpl;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,6 +28,7 @@ public class ChatInputStrategy implements InputStrategy {
 
     private final Plugin plugin;
     private final InputCfg inputCfg;
+    private final PlatformScheduler scheduler;
 
     private final MessageSender messageSender = new PlainMessageSenderImpl();
     private final StringMessageProcessorChain stringMessageProcessorChain = new StringMessageProcessorChainImpl();
@@ -44,7 +46,7 @@ public class ChatInputStrategy implements InputStrategy {
         CompletableFuture<String> onChatInput = new CompletableFuture<>();
         ChatHandler listener = new ChatHandler(player, onChatInput);
         Bukkit.getPluginManager().registerEvents(listener, plugin);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        scheduler.runAtEntityLater(player, () -> {
             if (onChatInput.isDone()) return;
 
             HandlerList.unregisterAll(listener);

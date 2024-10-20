@@ -1,6 +1,7 @@
 package com.dragosghinea.royale.internal.utils.input;
 
 import com.dragosghinea.royale.internal.utils.number.RoyaleNumberFormat;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -45,8 +46,8 @@ public class InputFetcherWithNumeric extends InputFetcher {
         throw new NumberFormatException("Invalid number format");
     }
 
-    public InputFetcherWithNumeric(Plugin plugin, InputCfg inputCfg, List<RoyaleNumberFormat> numberFormats) {
-        super(plugin, inputCfg);
+    public InputFetcherWithNumeric(Plugin plugin, InputCfg inputCfg, List<RoyaleNumberFormat> numberFormats, PlatformScheduler scheduler) {
+        super(plugin, inputCfg, scheduler);
         if (numberFormats == null)
             throw new IllegalArgumentException("Number formats cannot be null");
 
