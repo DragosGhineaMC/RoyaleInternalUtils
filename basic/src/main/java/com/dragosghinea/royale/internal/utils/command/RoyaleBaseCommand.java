@@ -93,10 +93,12 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         CmdContext context = generateContext(commandSender, args);
+        String currentInput = context.getArgsLeftToProcess().isEmpty() ? "" : context.getArgsLeftToProcess().lastElement();
         if (context.getPassedThrough().isEmpty()) {
             return routes.values().stream()
                     .filter(cmdRoute -> cmdRoute.canExecute(context, true))
                     .map(CmdRoute::getName)
+                    .filter(routeName -> routeName.startsWith(currentInput))
                     .collect(Collectors.toList());
         }
 
