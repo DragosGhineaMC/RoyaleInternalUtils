@@ -52,6 +52,10 @@ public class ChatInputStrategy implements InputStrategy {
             HandlerList.unregisterAll(listener);
             messageSender.sendMessage(player, stringMessageProcessorChain.processMessage(player, inputCfg.getChatTookTooLong()));
         }, 500);
+
+        for (String line : inputCfg.getLines())
+            messageSender.sendMessage(player, stringMessageProcessorChain.processMessage(player, line));
+
         return onChatInput;
     }
 
