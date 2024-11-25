@@ -21,8 +21,10 @@ public class RoyaleBaseCommand extends Command implements TabExecutor, PluginIde
 
     public RoyaleBaseCommand(Plugin plugin, String name, String permission, String permissionMessage, List<String> aliases, Map<String, CmdRoute> routes) {
         this(plugin, name, aliases, routes);
-        super.setPermission(permission);
-        super.setPermissionMessage(permissionMessage);
+        if (permission != null && !permission.equalsIgnoreCase("none")) {
+            super.setPermission(permission);
+            super.setPermissionMessage(permissionMessage);
+        }
     }
 
     public RoyaleBaseCommand(Plugin plugin, String name, List<String> aliases, Map<String, CmdRoute> routes) {
